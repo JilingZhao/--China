@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>怡然 · 水墨书写 · v5</title>
+<meta name="description" content="在宣纸上，用五色笔墨自由书写。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='3' y='3' width='34' height='34' rx='5' fill='%238b0805'/%3E%3Ctext x='20' y='28' text-anchor='middle' font-size='26' fill='%23fffaf0'%3E怡%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="studio">
+<header class="toolbar">
+<div class="brand">
+<span class="brand-mark">怡</span>
+<div>
+<strong>怡然</strong>
+<small>YI RAN · INK STUDIO</small>
+</div>
+</div>
+<div class="tool-group">
+<button class="tool brush" id="paletteToggle" aria-label="选择笔墨颜色" aria-expanded="true" title="选择笔墨颜色">
+<span class="tool-art">
+<span class="sprite brushIcon">
+</span>
+</span>
+<span class="tool-label">五色<small>INK COLORS</small>
+</span>
+</button>
+<button class="tool ink" id="inkToggle" aria-label="调整毛笔粗细" aria-expanded="false" title="调整毛笔粗细">
+<span class="tool-art">
+<span class="sprite inkIcon">
+</span>
+</span>
+<span class="tool-label">笔锋<small>BRUSH SIZE</small>
+</span>
+</button>
+</div>
+<div class="toolbar-actions">
+<button id="openEmotion" type="button">打开弹窗 · V5</button><button id="undo" type="button" title="撤回一笔 · Ctrl / ⌘ Z" disabled>撤回</button>
+<button id="clear" type="button" disabled>清空</button>
+<span class="action-divider">
+</span>
+<button class="save-button" id="export" type="button">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+<path d="M12 3v12m-4-4 4 4 4-4M4 15v5h16v-5"/>
+</svg>
+<span>保存画作</span>
+</button>
+</div>
+<div class="settings" id="settings" hidden>
+<label for="size">笔锋 <output id="sizeValue">18</output>
+</label>
+<input id="size" type="range" min="3" max="60" value="18">
+<div class="brush-preview">
+<span id="brushSample">
+</span>
+<small>轻落笔，慢慢写</small>
+</div>
+</div>
+</header>
+<section class="paper" aria-label="水墨画纸">
+<canvas id="paperTexture" aria-hidden="true">
+</canvas>
+<canvas id="drawing" aria-label="可用鼠标或触屏自由书写的画布">
+</canvas>
+<div class="empty-note" aria-hidden="true">
+<div class="vertical-title">
+<p>一纸闲情</p>
+<p>落笔怡然</p>
+</div>
+<small>选一抹颜色，感受水墨流动</small>
+</div>
+<div class="seal" aria-label="怡然">
+<span class="sprite sealImage">
+</span>
+</div>
+<aside class="palette" id="palette" aria-label="五色笔墨">
+<div class="palette-heading">
+<span>五色入墨</span>
+<small>CHOOSE YOUR INK</small>
+</div>
+<button class="color" data-color="青" aria-label="青色" aria-pressed="false">
+<span>青</span>
+<i class="swatch c0">
+</i>
+</button>
+<button class="color" data-color="赤" aria-label="赤色" aria-pressed="false">
+<span>赤</span>
+<i class="swatch c1">
+</i>
+</button>
+<button class="color" data-color="黄" aria-label="黄色" aria-pressed="false">
+<span>黄</span>
+<i class="swatch c2">
+</i>
+</button>
+<button class="color" data-color="白" aria-label="白色" aria-pressed="false">
+<span>白</span>
+<i class="swatch c3">
+</i>
+</button>
+<button class="color" data-color="黑" aria-label="黑色" aria-pressed="true">
+<span>黑</span>
+<i class="swatch c4">
+</i>
+</button>
+</aside>
+<div class="paper-footer">
+<span id="inkStatus">
+<i>
+</i>黑 · 18</span>
+<span id="reflectionStatus">v5 · 停笔 5 秒或保存，记录心情</span>
+</div>
+<p class="toast" id="toast" role="status">
+</p>
+</section>
+</main>
+<div id="emotionDialog" class="emotion-overlay" role="dialog" aria-modal="true" aria-labelledby="emotionTitle" hidden>
+  <div class="emotion-shell">
+    <button class="emotion-close" id="emotionClose" aria-label="关闭情绪卡片">×</button>
+    <section class="emotion-response" aria-label="情绪解读">
+      <span class="emotion-stamp" aria-hidden="true">怡<br>然</span>
+      <p class="emotion-eyebrow">一笔之后 · 听见自己</p>
+      <h2 id="responseTitle">把心里的话，慢慢写下来</h2>
+      <div id="emotionResult" aria-live="polite" aria-atomic="true"><p>有些感受，可以先交给笔墨。也可以在右边记下刚刚发生的事。</p><p>这里会根据你文字中的情绪线索，给出一段回应。</p></div>
+      <p class="emotion-note">本地情绪词解读 · 未接入 AI · 仅供自我觉察</p>
+    </section>
+    <section class="emotion-entry">
+      <p class="emotion-eyebrow">留一点时间给自己</p>
+      <h1 id="emotionTitle">情绪卡片</h1>
+      <label for="emotionText">因为什么事，有了此刻的感受？</label>
+      <textarea id="emotionText" maxlength="2000" placeholder="写下这个事情……
+发生了什么？你最在意的是什么？" aria-describedby="emotionHint"></textarea>
+      <div class="emotion-meta"><span id="emotionHint">文字仅留在当前页面，不上传、不持久保存</span><span id="emotionCount">0 / 2000</span></div>
+      <button id="emotionAnalyze" class="emotion-primary" disabled>听听这份心情 ↗</button>
+      <button id="emotionContinue" class="emotion-secondary">先不写，继续落笔</button>
+    </section>
+  </div>
+</div>
+<script src="reflection.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
